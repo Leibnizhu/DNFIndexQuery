@@ -30,55 +30,18 @@ public class GetSampleData {
 		act.setTerm(RedisUtils.getJedis().sinter(sampleMap.get("Terminal")));
 		act.setBlacklist(RedisUtils.getJedis().sinter(sampleMap.get("Blacklist")));
 		
-		List<String> tmp = RedisUtils.getJedis().lrange(sampleMap.get("MonHours"), 0, -1);
-		List<Integer> out = new ArrayList<Integer>();
-		for(String str : tmp){
-			out.add(Integer.parseInt(str));
+		List<String> tmp;
+		List<ArrayList<Integer>> hoursList = new ArrayList<ArrayList<Integer>>();
+		String[] weekName = {"MonHours", "TueHours", "WedHours", "ThuHours", "FriHours", "SatHours", "SunHours"};
+		for(int i = 0; i < 7; i++){
+			tmp = RedisUtils.getJedis().lrange(sampleMap.get(weekName[i]), 0, -1);
+			ArrayList<Integer> out = new ArrayList<Integer>();
+			for(String str : tmp){
+				out.add(Integer.parseInt(str));
+			}
+			hoursList.add(out);
 		}
-		act.setMonHours(out);
-		
-		out.clear();
-		tmp = RedisUtils.getJedis().lrange(sampleMap.get("TueHours"), 0, -1);
-		for(String str : tmp){
-			out.add(Integer.parseInt(str));
-		}
-		act.setTueHours(out);
-		
-		out.clear();
-		tmp = RedisUtils.getJedis().lrange(sampleMap.get("WedHours"), 0, -1);
-		for(String str : tmp){
-			out.add(Integer.parseInt(str));
-		}
-		act.setWedHours(out);
-		
-		out.clear();
-		tmp = RedisUtils.getJedis().lrange(sampleMap.get("ThuHours"), 0, -1);
-		for(String str : tmp){
-			out.add(Integer.parseInt(str));
-		}
-		act.setThuHours(out);
-		
-		out.clear();
-		tmp = RedisUtils.getJedis().lrange(sampleMap.get("FriHours"), 0, -1);
-		for(String str : tmp){
-			out.add(Integer.parseInt(str));
-		}
-		act.setFriHours(out);
-		
-		out.clear();
-		tmp = RedisUtils.getJedis().lrange(sampleMap.get("SatHours"), 0, -1);
-		for(String str : tmp){
-			out.add(Integer.parseInt(str));
-		}
-		act.setSatHours(out);
-		
-		out.clear();
-		tmp = RedisUtils.getJedis().lrange(sampleMap.get("SunHours"), 0, -1);
-		for(String str : tmp){
-			out.add(Integer.parseInt(str));
-		}
-		act.setSunHours(out);
-		
+		act.setHours(hoursList);
 		return act;
 	}
 }

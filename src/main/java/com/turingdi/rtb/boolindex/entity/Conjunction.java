@@ -1,27 +1,48 @@
 package com.turingdi.rtb.boolindex.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 public class Conjunction{
 	private int id;
 	private Date startDate;
 	private Date stopDate;
-	private Set<String> Area;
+	private Set<String> area;
 	private Set<String> adx;
 	private Set<String> term;
 	private Set<String> blacklist;
-	private int week;	//周几，1-7
-	private List<Integer> Hours;
+	private Integer week;	//周几，1-7
+	private ArrayList<Integer> hours;
 	
-	//需要Override hashcode和equals，以便Map进行key比较操作，id可以忽略，因为新加的conjunction没有id
+	//不含非
+	public int size(){
+		// startDate,adx必须有
+		int size = 2;
+		if(null != stopDate){
+			size++;
+		}
+		if(null != area && area.size() > 0){
+			size++;
+		}
+		if(null != term && term.size() > 0){
+			size++;
+		}
+		if(null != blacklist && blacklist.size() > 0){
+			size++;
+		}
+		if(null != week){
+			size += 2;
+		}
+		return size;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((Area == null) ? 0 : Area.hashCode());
-		result = prime * result + ((Hours == null) ? 0 : Hours.hashCode());
+		result = prime * result + ((area == null) ? 0 : area.hashCode());
+		result = prime * result + ((hours == null) ? 0 : hours.hashCode());
 		result = prime * result + ((adx == null) ? 0 : adx.hashCode());
 		result = prime * result + ((blacklist == null) ? 0 : blacklist.hashCode());
 		result = prime * result + id;
@@ -40,15 +61,15 @@ public class Conjunction{
 		if (getClass() != obj.getClass())
 			return false;
 		Conjunction other = (Conjunction) obj;
-		if (Area == null) {
-			if (other.Area != null)
+		if (area == null) {
+			if (other.area != null)
 				return false;
-		} else if (!Area.equals(other.Area))
+		} else if (!area.equals(other.area))
 			return false;
-		if (Hours == null) {
-			if (other.Hours != null)
+		if (hours == null) {
+			if (other.hours != null)
 				return false;
-		} else if (!Hours.equals(other.Hours))
+		} else if (!hours.equals(other.hours))
 			return false;
 		if (adx == null) {
 			if (other.adx != null)
@@ -81,7 +102,12 @@ public class Conjunction{
 			return false;
 		return true;
 	}
-
+	@Override
+	public String toString() {
+		return "Conjunction [id=" + id + ", startDate=" + startDate + ", stopDate=" + stopDate + /*", Area=" + Area
+				+*/ ", adx=" + adx + ", term=" + term + ", blacklist=" + blacklist + ", week=" + week + ", hours=" + hours
+				+ "]";
+	}
 	public int getId() {
 		return id;
 	}
@@ -101,10 +127,10 @@ public class Conjunction{
 		this.stopDate = stopDate;
 	}
 	public Set<String> getArea() {
-		return Area;
+		return area;
 	}
 	public void setArea(Set<String> area) {
-		Area = area;
+		this.area = area;
 	}
 	public Set<String> getAdx() {
 		return adx;
@@ -124,16 +150,16 @@ public class Conjunction{
 	public void setBlacklist(Set<String> blacklist) {
 		this.blacklist = blacklist;
 	}
-	public int getWeek() {
+	public Integer getWeek() {
 		return week;
 	}
-	public void setWeek(int week) {
+	public void setWeek(Integer week) {
 		this.week = week;
 	}
-	public List<Integer> getHours() {
-		return Hours;
+	public ArrayList<Integer> getHours() {
+		return hours;
 	}
-	public void setHours(List<Integer> hours) {
-		Hours = hours;
+	public void setHours(ArrayList<Integer> hours) {
+		this.hours = hours;
 	}
 }

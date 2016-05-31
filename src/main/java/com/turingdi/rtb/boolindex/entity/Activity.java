@@ -1,5 +1,6 @@
 package com.turingdi.rtb.boolindex.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -45,73 +46,27 @@ public class Activity {
 	private Set<String> adx;
 	private Set<String> term;
 	private Set<String> blacklist;
-	private List<Integer> monHours;
-	private List<Integer> tueHours;
-	private List<Integer> wedHours;
-	private List<Integer> thuHours;
-	private List<Integer> friHours;
-	private List<Integer> satHours;
-	private List<Integer> sunHours;
+	private List<ArrayList<Integer>> Hours;
+	
 	
 	@Override
 	public String toString() {
 		return "Activity [id=" + id + ", name=" + name + ", mode=" + mode + ", cpc=" + cpc + ", total=" + total
-				+ ", everyday=" + everyday + ", object=" + object + ", unit=" + unit + ", count=" + count + ", crowd="
-				+ crowd + ", startDate=" + startDate + ", stopDate=" + stopDate + ", Area=" + Area + ", adx=" + adx
-				+ ", term=" + term + ", blacklist=" + blacklist + ", monHours=" + monHours + ", tueHours=" + tueHours
-				+ ", wedHours=" + wedHours + ", thuHours=" + thuHours + ", friHours=" + friHours + ", satHours="
-				+ satHours + ", sunHours=" + sunHours + "]";
+				+ ", everyday=" + everyday + ", object=" + object + ", unit=" + unit + ", count=" + count + /*", crowd="
+				+ crowd +*/ ", startDate=" + startDate + ", stopDate=" + stopDate +/* ", Area=" + Area + */", adx=" + adx
+				+ ", term=" + term + ", blacklist=" + blacklist + ", Hours=" + Hours + "]";
 	}
-	public Activity() {
-		super();
+	public List<ArrayList<Integer>> getHours() {
+		return Hours;
+	}
+	public void setHours(List<ArrayList<Integer>> hours) {
+		Hours = hours;
 	}
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
-	}
-	public List<Integer> getMonHours() {
-		return monHours;
-	}
-	public void setMonHours(List<Integer> monHours) {
-		this.monHours = monHours;
-	}
-	public List<Integer> getTueHours() {
-		return tueHours;
-	}
-	public void setTueHours(List<Integer> tueHours) {
-		this.tueHours = tueHours;
-	}
-	public List<Integer> getWedHours() {
-		return wedHours;
-	}
-	public void setWedHours(List<Integer> wedHours) {
-		this.wedHours = wedHours;
-	}
-	public List<Integer> getThuHours() {
-		return thuHours;
-	}
-	public void setThuHours(List<Integer> thuHours) {
-		this.thuHours = thuHours;
-	}
-	public List<Integer> getFriHours() {
-		return friHours;
-	}
-	public void setFriHours(List<Integer> friHours) {
-		this.friHours = friHours;
-	}
-	public List<Integer> getSatHours() {
-		return satHours;
-	}
-	public void setSatHours(List<Integer> satHours) {
-		this.satHours = satHours;
-	}
-	public List<Integer> getSunHours() {
-		return sunHours;
-	}
-	public void setSunHours(List<Integer> sunHours) {
-		this.sunHours = sunHours;
 	}
 	public String getName() {
 		return name;
@@ -203,4 +158,5 @@ public class Activity {
 	public void setBlacklist(Set<String> blacklist) {
 		this.blacklist = blacklist;
 	}
+
 }
