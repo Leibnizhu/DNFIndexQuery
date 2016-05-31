@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.turingdi.rtb.boolindex.entity.Activity;
+
 public class GetSampleData {
 	public Activity getOneRedisSample(String ActivityID) throws Exception{
 		Map<String, String> sampleMap = RedisUtils.getJedis().hgetAll(ActivityID);

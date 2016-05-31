@@ -1,4 +1,4 @@
-package com.turingdi.rtb.boolindex;
+package com.turingdi.rtb.boolindex.entity;
 
 import java.util.Date;
 import java.util.List;
