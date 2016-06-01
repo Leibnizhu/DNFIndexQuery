@@ -1,5 +1,10 @@
 package com.turingdi.rtb.boolindex.entity;
 
+/**
+ * Posting List中每个元素的实体，对应论文里的(3, ∈)或(6,∉)等
+ * @author leibniz
+ *
+ */
 public class Posting implements Comparable<Posting>{
 	private Conjunction conj;	//原来所属的conjunction
 	private boolean belong;	//该字段是属于/不属于的标识
@@ -10,6 +15,11 @@ public class Posting implements Comparable<Posting>{
 		this.belong = belong;
 	}
 
+	/* 
+	 * 比较的方法，来自Comparable接口
+	 * 优先判断conjunction的ID，如果ID相等，则∈关系的比∉关系的更大
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
 	@Override
 	public int compareTo(Posting o) {
 		int diff = this.getConj().getId() - o.getConj().getId();

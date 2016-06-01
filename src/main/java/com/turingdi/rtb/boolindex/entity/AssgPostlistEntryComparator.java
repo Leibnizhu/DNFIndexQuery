@@ -3,6 +3,10 @@ package com.turingdi.rtb.boolindex.entity;
 import java.util.Comparator;
 import java.util.Map.Entry;
 
+/**
+ * 建立二级索引时，Map<Assignment, PostList>中根据PostList的第一个Posting的conjunctionID来排序所需的比较器
+ * @author leibniz
+ */
 public class AssgPostlistEntryComparator implements Comparator<Entry<Assignment, PostList>>{
 
 	@Override
