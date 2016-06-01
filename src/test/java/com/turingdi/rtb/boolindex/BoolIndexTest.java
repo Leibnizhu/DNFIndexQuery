@@ -13,6 +13,7 @@ import com.turingdi.rtb.boolindex.entity.Activity;
 import com.turingdi.rtb.boolindex.entity.Assignment;
 import com.turingdi.rtb.boolindex.entity.Conjunction;
 import com.turingdi.rtb.boolindex.entity.PostList;
+import com.turingdi.rtb.boolindex.entity.Query;
 
 public class BoolIndexTest {
 	@Test
@@ -36,6 +37,17 @@ public class BoolIndexTest {
 			fw.write("\n建立索引结果：\n一级索引：\n" + primaryIndex + "\n二级索引：\n" + secondaryIndex);
 			fw.close();
 			//System.out.println("\n建立索引结果：\n一级索引：\n" + primaryIndex + "\n二级索引：\n" + secondaryIndex);
+			
+			//查询测试
+			//配置query，date/week/hour在new的时候已经根据当前日期时间初始化了
+			Query query = new Query();
+			query.setAdsense("Adsense::3");
+			query.setAdx("Tanx");
+			query.setArea("顺德");
+			query.setTerm("PC");
+			//执行查询
+			List<Activity> result = new BoolQuery().boolQuery(primaryIndex, secondaryIndex, query);
+			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
