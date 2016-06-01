@@ -41,8 +41,8 @@ public class BoolQuery {
 			Query query) {
 		Set<Conjunction> result = new HashSet<Conjunction>();
 		for (int K = Math.min(query.size(), Collections.max(secondaryIndex.keySet())); K >= 0; K--) {
-			List<PostList> poLists = getPostingLists(query, K, secondaryIndex);
-			initializeCurrentEntries(poLists, secondaryIndex);
+			List<PostList> poLists = getPostingLists(query, secondaryIndex.get(K));
+			initializeCurrentEntries(poLists);
 			// K=0和K=1的处理一样
 			if (0 == K) {
 				K = 1;
@@ -147,15 +147,16 @@ public class BoolQuery {
 	}
 
 	/**
-	 * 初始化PostingList，将curEntry设置为
+	 * 初始化PostingList，将curEntry设置为poList中的第一个元素
 	 * 
 	 * @param poLists
 	 * @param secondaryIndex
 	 */
-	private void initializeCurrentEntries(List<PostList> poLists,
-			Map<Integer, LinkedHashMap<Assignment, PostList>> secondaryIndex) {
-		// TODO Auto-generated method stub
-
+	private void initializeCurrentEntries(List<PostList> poLists) {
+		for(PostList poList : poLists){
+			poList.setCurEntry(0);
+			poList.setCurPost(poList.getPostingList().get(0));
+		}
 	}
 
 	/**
@@ -166,8 +167,7 @@ public class BoolQuery {
 	 * @param secondaryIndex
 	 * @return
 	 */
-	private List<PostList> getPostingLists(Query bidQuery, int k,
-			Map<Integer, LinkedHashMap<Assignment, PostList>> secondaryIndex) {
+	private List<PostList> getPostingLists(Query bidQuery, LinkedHashMap<Assignment, PostList> assgPListMap) {
 		// TODO Auto-generated method stub
 		return null;
 	}
