@@ -4,11 +4,19 @@ import java.util.List;
 
 public class PostList {
 	private List<Posting> postingList;
+	private Posting curPost;
 	private Integer curEntry;
 	
 	@Override
 	public String toString() {
-		return "PostList [postingList=" + postingList + ", curEntry=" + curEntry + "]";
+		return "PostList [postingList=" + postingList + ", curPost=@" + curPost.hashCode() + ", curEntry=" + curEntry + "]";
+	}
+	
+	public Posting getCurPost() {
+		return curPost;
+	}
+	public void setCurPost(Posting curPost) {
+		this.curPost = curPost;
 	}
 	public List<Posting> getPostingList() {
 		return postingList;

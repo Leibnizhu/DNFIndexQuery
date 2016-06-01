@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -46,7 +47,7 @@ public class BoolIndexTest {
 			query.setArea("顺德");
 			query.setTerm("PC");
 			//执行查询
-			List<Activity> result = new BoolQuery().boolQuery(primaryIndex, secondaryIndex, query);
+			Set<Activity> result = new BoolQuery().boolQuery(primaryIndex, secondaryIndex, query);
 			System.out.println(result);
 		} catch (Exception e) {
 			e.printStackTrace();

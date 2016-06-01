@@ -104,6 +104,7 @@ public class MakeIndex {
 			postList = new PostList();
 			postList.setPostingList(belongPostList);
 			postList.setCurEntry(0);
+			postList.setCurPost(belongPostList.get(0));
 			assgMap.put(assg, postList);
 			
 			//stopDate
@@ -114,6 +115,7 @@ public class MakeIndex {
 				postList = new PostList();
 				postList.setPostingList(belongPostList);
 				postList.setCurEntry(0);
+				postList.setCurPost(belongPostList.get(0));
 				assgMap.put(assg, postList);
 			}
 			
@@ -127,6 +129,7 @@ public class MakeIndex {
 					postList = new PostList();
 					postList.setPostingList(belongPostList);
 					postList.setCurEntry(0);
+					postList.setCurPost(belongPostList.get(0));
 					assgMap.put(assg, postList);
 				}
 			}
@@ -141,6 +144,7 @@ public class MakeIndex {
 					postList = new PostList();
 					postList.setPostingList(belongPostList);
 					postList.setCurEntry(0);
+					postList.setCurPost(belongPostList.get(0));
 					assgMap.put(assg, postList);
 				}
 			}
@@ -155,6 +159,7 @@ public class MakeIndex {
 					postList = new PostList();
 					postList.setPostingList(belongPostList);
 					postList.setCurEntry(0);
+					postList.setCurPost(belongPostList.get(0));
 					assgMap.put(assg, postList);
 				}
 			}
@@ -169,6 +174,7 @@ public class MakeIndex {
 					postList = new PostList();
 					postList.setPostingList(belongPostList);
 					postList.setCurEntry(0);
+					postList.setCurPost(belongPostList.get(0));
 					assgMap.put(assg, postList);
 				}
 			}
@@ -182,6 +188,7 @@ public class MakeIndex {
 				postList = new PostList();
 				postList.setPostingList(belongPostList);
 				postList.setCurEntry(0);
+				postList.setCurPost(belongPostList.get(0));
 				assgMap.put(assg, postList);
 				//一天内哪些时间段全部要逐个创建Assignment
 				for(Integer hour : conj.getHours()){
@@ -191,6 +198,7 @@ public class MakeIndex {
 					postList = new PostList();
 					postList.setPostingList(belongPostList);
 					postList.setCurEntry(0);
+					postList.setCurPost(belongPostList.get(0));
 					assgMap.put(assg, postList);
 				}
 			}
