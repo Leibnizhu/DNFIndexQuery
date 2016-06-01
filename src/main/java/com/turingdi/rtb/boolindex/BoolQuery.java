@@ -1,6 +1,5 @@
 package com.turingdi.rtb.boolindex;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -37,7 +36,7 @@ public class BoolQuery {
 	 * @param query
 	 * @return
 	 */
-	public Set<Conjunction> secondaryIndexQuery(Map<Integer, LinkedHashMap<Assignment, PostList>> secondaryIndex, Query query) {
+	private Set<Conjunction> secondaryIndexQuery(Map<Integer, LinkedHashMap<Assignment, PostList>> secondaryIndex, Query query) {
 		Set<Conjunction> result = new HashSet<Conjunction>();
 		for (int K = Math.min(query.size(), Collections.max(secondaryIndex.keySet())); K >= 0; K--) {
 			List<PostList> poLists = getPostingLists(query, K, secondaryIndex);
@@ -100,15 +99,22 @@ public class BoolQuery {
 		return null;
 	}
 		
+	/*------------------------------------以下是secondaryIndexQuery用到的方法--------------------------------------*/
 		
 	/**
-	 * 对指定的PostList，跳过其中List<Posting>的i个Posting
+	 * 对指定的PostList，跳过其中List<Posting>的Posting，直至当前对应的conjunction的ID大于或等于nextID
 	 * @param postList
-	 * @param i
+	 * @param nextID
 	 */
-	private void postListSkip(PostList postList, int i) {
-		// TODO Auto-generated method stub
-		
+	private void postListSkip(PostList postList, int nextID) {
+		int index = postList.getCurEntry();
+		while(postList.getPostingList().get(index).getConj().getId() < nextID){
+			//相等或者大于的时候就要跳出
+			index++;
+		}
+		//将找到的conjunction ID设置到curEntry和curPost
+		postList.setCurEntry(index);
+		postList.setCurPost(postList.getPostingList().get(index));
 	}
 
 	/**
@@ -145,4 +151,7 @@ public class BoolQuery {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/*------------------------------------以上是secondaryIndexQuery用到的方法--------------------------------------*/
+	
 }
