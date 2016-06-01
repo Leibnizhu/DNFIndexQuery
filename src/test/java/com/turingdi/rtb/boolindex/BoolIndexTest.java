@@ -3,6 +3,7 @@ package com.turingdi.rtb.boolindex;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,13 +12,13 @@ import org.junit.Test;
 import com.turingdi.rtb.boolindex.entity.Activity;
 import com.turingdi.rtb.boolindex.entity.Assignment;
 import com.turingdi.rtb.boolindex.entity.Conjunction;
-import com.turingdi.rtb.boolindex.entity.Posting;
+import com.turingdi.rtb.boolindex.entity.PostList;
 
 public class BoolIndexTest {
 	@Test
 	public void getSampleTest(){
 		Map<Conjunction, List<Activity>> primaryIndex = new HashMap<Conjunction, List<Activity>>();
-		Map<Integer, Map<Assignment, List<Posting>>> secondaryIndex = new HashMap<Integer, Map<Assignment, List<Posting>>>();
+		Map<Integer, LinkedHashMap<Assignment, PostList>> secondaryIndex = new HashMap<Integer, LinkedHashMap<Assignment, PostList>>();
 		try {
 			for(int i = 1; i >= 0; i--){
 				long start = System.nanoTime();

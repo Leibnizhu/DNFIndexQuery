@@ -3,13 +3,16 @@ package com.turingdi.rtb.boolindex;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.turingdi.rtb.boolindex.entity.Activity;
+import com.turingdi.rtb.boolindex.entity.AssgPostlistEntryComparator;
 import com.turingdi.rtb.boolindex.entity.Assignment;
 import com.turingdi.rtb.boolindex.entity.Conjunction;
+import com.turingdi.rtb.boolindex.entity.PostList;
 import com.turingdi.rtb.boolindex.entity.Posting;
 
 public class MakeIndex {
@@ -20,7 +23,7 @@ public class MakeIndex {
 	 * @param act
 	 */
 	public void appendIndex(Map<Conjunction, List<Activity>> primaryIndex,
-			Map<Integer, Map<Assignment, List<Posting>>> secondaryIndex, Activity act) {
+			Map<Integer, LinkedHashMap<Assignment, PostList>> secondaryIndex, Activity act) {
 		// 一级索引
 		List<Conjunction> conjList = analysisConjunction(act);
 		for (Conjunction conj : conjList) {
@@ -39,16 +42,18 @@ public class MakeIndex {
 		// 二级索引
 		for (Conjunction conj : conjList) {
 			int size = conj.size();
-			Map<Assignment, List<Posting>> newAssgMap = analysisAssignment(conj);
+			LinkedHashMap<Assignment, PostList> newAssgMap = analysisAssignment(conj);
 			if (secondaryIndex.containsKey(size)) {
 				// 往Assignment对应的Posting的List中追加即可
-				Map<Assignment, List<Posting>> storedAssgMap = secondaryIndex.get(size);
+				LinkedHashMap<Assignment, PostList> storedAssgMap = secondaryIndex.get(size);
 				for (Assignment assg : newAssgMap.keySet()) {
 					if (storedAssgMap.containsKey(assg)) {
 						// 原来已存储这个Assignment，则将新的Posting的List加入到原有的List中去
-						storedAssgMap.get(assg).addAll(newAssgMap.get(assg));
+						//curEntry忽略掉因为已经在storedAssgMap第一次put这个assg的时候已经放进去了
+						storedAssgMap.get(assg).getPostingList().addAll(newAssgMap.get(assg).getPostingList());
 					} else {
 						// 原来没有存储，则直接put
+						//这时候放进去的PostList里面curEntry就是0
 						storedAssgMap.put(assg, newAssgMap.get(assg));
 					}
 				}
@@ -59,10 +64,19 @@ public class MakeIndex {
 			}
 		}
 
-		// 二级索引排序
-		for (Map<Assignment, List<Posting>> assgPostMap : secondaryIndex.values()) {
-			for (List<Posting> postList : assgPostMap.values()) {
-				Collections.sort(postList);
+		// 二级索引排序，遍历所有Conjunction的Size
+		for (LinkedHashMap<Assignment, PostList> assgPostMap : secondaryIndex.values()) {
+			//——每个PostingList内部排序
+			for (PostList postList : assgPostMap.values()) {
+				Collections.sort(postList.getPostingList());
+			}
+			//——Map<Assignment, PostList>中根据PostList的第一个Posting的conjunctionID来排序
+			List<Entry<Assignment, PostList>> tempList = new ArrayList<Entry<Assignment, PostList>>(assgPostMap.entrySet());
+			Collections.sort(tempList, new AssgPostlistEntryComparator());
+//			System.out.println(tempList);
+			assgPostMap = new LinkedHashMap<Assignment, PostList>();
+			for(Entry<Assignment, PostList> entry : tempList){
+				assgPostMap.put(entry.getKey(), entry.getValue());
 			}
 		}
 	}
@@ -73,27 +87,34 @@ public class MakeIndex {
 	 * @param conj
 	 * @return
 	 */
-	private Map<Assignment, List<Posting>> analysisAssignment(Conjunction conj) {
-		Map<Assignment, List<Posting>> assgMap = new HashMap<Assignment, List<Posting>>();
+	private LinkedHashMap<Assignment, PostList> analysisAssignment(Conjunction conj) {
+		LinkedHashMap<Assignment, PostList> assgMap = new LinkedHashMap<Assignment, PostList>();
 		int size = conj.size();
 		try{
 			Assignment assg = null;
 			List<Posting> belongPostList ;
 			List<Posting> nobelongPostList = new ArrayList<Posting>();
+			PostList postList;
 			nobelongPostList.add(new Posting(conj, false));
 			//对各个属性分别创建键值对
 			//startDate
 			assg = new Assignment(size, "startDate", new SimpleDateFormat("yyyy-MM-dd").format(conj.getStartDate()));
 			belongPostList = new ArrayList<Posting>();
 			belongPostList.add(new Posting(conj, true));
-			assgMap.put(assg, belongPostList);
+			postList = new PostList();
+			postList.setPostingList(belongPostList);
+			postList.setCurEntry(0);
+			assgMap.put(assg, postList);
 			
 			//stopDate
 			if(null != conj.getStopDate()){
 				assg = new Assignment(size, "stopDate", new SimpleDateFormat("yyyy-MM-dd").format(conj.getStopDate()));
 				belongPostList = new ArrayList<Posting>();
 				belongPostList.add(new Posting(conj, true));
-				assgMap.put(assg, belongPostList);
+				postList = new PostList();
+				postList.setPostingList(belongPostList);
+				postList.setCurEntry(0);
+				assgMap.put(assg, postList);
 			}
 			
 			//area
@@ -103,7 +124,10 @@ public class MakeIndex {
 					assg = new Assignment(size, "area", area);
 					belongPostList = new ArrayList<Posting>();
 					belongPostList.add(new Posting(conj, true));
-					assgMap.put(assg, belongPostList);
+					postList = new PostList();
+					postList.setPostingList(belongPostList);
+					postList.setCurEntry(0);
+					assgMap.put(assg, postList);
 				}
 			}
 			
@@ -114,7 +138,10 @@ public class MakeIndex {
 					assg = new Assignment(size, "adx", adx);
 					belongPostList = new ArrayList<Posting>();
 					belongPostList.add(new Posting(conj, true));
-					assgMap.put(assg, belongPostList);
+					postList = new PostList();
+					postList.setPostingList(belongPostList);
+					postList.setCurEntry(0);
+					assgMap.put(assg, postList);
 				}
 			}
 			
@@ -125,7 +152,10 @@ public class MakeIndex {
 					assg = new Assignment(size, "term", term);
 					belongPostList = new ArrayList<Posting>();
 					belongPostList.add(new Posting(conj, true));
-					assgMap.put(assg, belongPostList);
+					postList = new PostList();
+					postList.setPostingList(belongPostList);
+					postList.setCurEntry(0);
+					assgMap.put(assg, postList);
 				}
 			}
 			
@@ -136,7 +166,10 @@ public class MakeIndex {
 					assg = new Assignment(size, "blacklist", blackitem);
 					belongPostList = new ArrayList<Posting>();
 					belongPostList.add(new Posting(conj, false));
-					assgMap.put(assg, nobelongPostList);
+					postList = new PostList();
+					postList.setPostingList(belongPostList);
+					postList.setCurEntry(0);
+					assgMap.put(assg, postList);
 				}
 			}
 			
@@ -146,13 +179,19 @@ public class MakeIndex {
 				assg = new Assignment(size, "week", String.valueOf(conj.getWeek()));
 				belongPostList = new ArrayList<Posting>();
 				belongPostList.add(new Posting(conj, true));
-				assgMap.put(assg, belongPostList);
+				postList = new PostList();
+				postList.setPostingList(belongPostList);
+				postList.setCurEntry(0);
+				assgMap.put(assg, postList);
 				//一天内哪些时间段全部要逐个创建Assignment
 				for(Integer hour : conj.getHours()){
 					assg = new Assignment(size, "hours", String.valueOf(hour));
 					belongPostList = new ArrayList<Posting>();
 					belongPostList.add(new Posting(conj, true));
-					assgMap.put(assg, belongPostList);
+					postList = new PostList();
+					postList.setPostingList(belongPostList);
+					postList.setCurEntry(0);
+					assgMap.put(assg, postList);
 				}
 			}
 		} catch(Exception e){
