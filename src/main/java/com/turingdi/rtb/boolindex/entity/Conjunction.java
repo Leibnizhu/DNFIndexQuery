@@ -19,18 +19,19 @@ public class Conjunction{
 	public int size(){
 		// startDate,adx必须有
 		int size = 2;
-		if(null != stopDate){
+		/*if(null != stopDate){
 			size++;
-		}
+		}*/
 		if(null != area && area.size() > 0){
 			size++;
 		}
 		if(null != term && term.size() > 0){
 			size++;
 		}
-		if(null != blacklist && blacklist.size() > 0){
+		/*blacklist为∉条件，不参与size计算
+		 * if(null != blacklist && blacklist.size() > 0){
 			size++;
-		}
+		}*/
 		if(null != week){
 			size += 2;
 		}

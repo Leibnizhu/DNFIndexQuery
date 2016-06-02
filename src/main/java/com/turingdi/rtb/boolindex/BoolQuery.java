@@ -1,5 +1,7 @@
 package com.turingdi.rtb.boolindex;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -26,6 +28,7 @@ public class BoolQuery {
 	public Set<Activity> boolQuery(Map<Conjunction, List<Activity>> primaryIndex,
 			Map<Integer, LinkedHashMap<Assignment, PostList>> secondaryIndex, Query bidQuery) {
 		Set<Conjunction> conjResult = secondaryIndexQuery(secondaryIndex, bidQuery);
+		System.out.println("二级检索结果：" + conjResult);
 		Set<Activity> result = primaryIndexQuery(primaryIndex, conjResult);
 		return result;
 	}
@@ -41,7 +44,11 @@ public class BoolQuery {
 			Query query) {
 		Set<Conjunction> result = new HashSet<Conjunction>();
 		for (int K = Math.min(query.size(), Collections.max(secondaryIndex.keySet())); K >= 0; K--) {
-			List<PostList> poLists = getPostingLists(query, secondaryIndex.get(K));
+			if (null == secondaryIndex.get(K)) {
+				// K没有对应的Map的话就直接继续下一个K
+				continue;
+			}
+			List<PostList> poLists = getPostingLists(query, K, secondaryIndex.get(K));
 			initializeCurrentEntries(poLists);
 			// K=0和K=1的处理一样
 			if (0 == K) {
@@ -59,12 +66,14 @@ public class BoolQuery {
 				sortByCurEntries(poLists);
 				int nextID = 0;
 				// 判断poList第一个的conjunction和第K个的是否一致
-				if (poLists.get(0).getCurPost().getConj().getId() == poLists.get(K).getCurPost().getConj().getId()) {
+				if (poLists.get(0).getCurPost().getConj().getId() == poLists.get(K - 1).getCurPost().getConj()
+						.getId()) {
 					if (!poLists.get(0).getCurPost().isBelong()) {
 						// 如果是“不属于”的posting
 						int rejectID = poLists.get(0).getCurPost().getConj().getId();
 						for (int L = K; L < poLists.size(); L++) {
-							if (rejectID == poLists.get(L).getCurPost().getConj().getId()) {
+							// System.out.println("reject = " + rejectID);
+							if (null != poLists.get(L).getCurPost() &&rejectID == poLists.get(L).getCurPost().getConj().getId()) {
 								postListSkip(poLists.get(L), rejectID + 1);
 							} else {
 								break;
@@ -97,8 +106,14 @@ public class BoolQuery {
 	 */
 	private Set<Activity> primaryIndexQuery(Map<Conjunction, List<Activity>> primaryIndex,
 			Set<Conjunction> conjResult) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<Activity> result = new HashSet<Activity>();
+		for (Conjunction conj : conjResult) {
+			List<Activity> actList = primaryIndex.get(conj);
+			for (Activity act : actList) {
+				result.add(act);
+			}
+		}
+		return result;
 	}
 
 	/*------------------------------------以下是secondaryIndexQuery用到的方法--------------------------------------*/
@@ -112,12 +127,27 @@ public class BoolQuery {
 	private void postListSkip(PostList postList, int nextID) {
 		int index = postList.getCurEntry();
 		// 相等或者大于的时候就要跳出
-		while (postList.getPostingList().get(index).getConj().getId() < nextID) {
-			index++;
+		// System.out.println(postList.getPostingList());
+		// System.out.println(index + " " + nextID + " " +
+		// postList.getPostingList().size());
+		while (true) {
+			if (postList.getPostingList().size() > index) {
+				if (postList.getPostingList().get(index).getConj().getId() < nextID) {
+					// 还没找到，继续增加index
+					index++;
+				} else {
+					// 将找到的conjunction ID设置到curEntry和curPost
+					postList.setCurEntry(index);
+					postList.setCurPost(postList.getPostingList().get(index));
+					break;
+				}
+			} else {
+				// index==size，已超出界限，curEntry设为null
+				postList.setCurEntry(null);
+				postList.setCurPost(null);
+				break;
+			}
 		}
-		// 将找到的conjunction ID设置到curEntry和curPost
-		postList.setCurEntry(index);
-		postList.setCurPost(postList.getPostingList().get(index));
 	}
 
 	/**
@@ -130,19 +160,25 @@ public class BoolQuery {
 		int end;
 		int flag = poLists.size();
 		while (flag > 0) {
-			//每次遍历只要走到上一次最后发生交换的地方即可
+			// 每次遍历只要走到上一次最后发生交换的地方即可
 			end = flag;
 			flag = 0;
-			for (int j = 1; j < end; j++)
-				//与临近的PostList进行比较
-				if (poLists.get(j - 1).getCurPost().compareTo(poLists.get(j).getCurPost()) > 0) {
-					//进行交换
+			for (int j = 1; j < end; j++){
+				// 与临近的PostList进行比较
+				// 遇到curEntry为空的应该往后排
+				if (null == poLists.get(j).getCurPost()){
+					continue;
+				}
+				if (null == poLists.get(j - 1).getCurPost()
+						|| poLists.get(j - 1).getCurPost().compareTo(poLists.get(j).getCurPost()) > 0) {
+					// 进行交换
 					PostList temp = poLists.get(j - 1);
 					poLists.set(j - 1, poLists.get(j));
 					poLists.set(j, temp);
-					//记录发生交换的位置
+					// 记录发生交换的位置
 					flag = j;
 				}
+			}
 		}
 	}
 
@@ -153,7 +189,7 @@ public class BoolQuery {
 	 * @param secondaryIndex
 	 */
 	private void initializeCurrentEntries(List<PostList> poLists) {
-		for(PostList poList : poLists){
+		for (PostList poList : poLists) {
 			poList.setCurEntry(0);
 			poList.setCurPost(poList.getPostingList().get(0));
 		}
@@ -167,9 +203,75 @@ public class BoolQuery {
 	 * @param secondaryIndex
 	 * @return
 	 */
-	private List<PostList> getPostingLists(Query bidQuery, LinkedHashMap<Assignment, PostList> assgPListMap) {
-		// TODO Auto-generated method stub
-		return null;
+	private List<PostList> getPostingLists(Query query, int K, LinkedHashMap<Assignment, PostList> assgPListMap) {
+		List<PostList> result = new ArrayList<PostList>();
+		Assignment assg;
+		PostList tmpPList;
+		// 反射效率低，还是直接手动按属性去生成result吧
+		// area
+		if (null != query.getArea()) {
+			assg = new Assignment(K, "area", query.getArea());
+			tmpPList = assgPListMap.get(assg);
+			if (null != tmpPList) {
+				// 能查询到符合条件的Assignment
+				result.add(tmpPList);
+			}
+		}
+		// adx
+		if (null != query.getAdx()) {
+			assg = new Assignment(K, "adx", query.getAdx());
+			tmpPList = assgPListMap.get(assg);
+			if (null != tmpPList) {
+				// 能查询到符合条件的Assignment
+				result.add(tmpPList);
+			}
+		}
+		// term
+		if (null != query.getTerm()) {
+			assg = new Assignment(K, "term", query.getTerm());
+			tmpPList = assgPListMap.get(assg);
+			if (null != tmpPList) {
+				// 能查询到符合条件的Assignment
+				result.add(tmpPList);
+			}
+		}
+		// adsense
+		if (null != query.getAdsense()) {
+			assg = new Assignment(K, "blacklist", query.getAdsense());
+			tmpPList = assgPListMap.get(assg);
+			if (null != tmpPList) {
+				// 能查询到符合条件的Assignment
+				result.add(tmpPList);
+			}
+		}
+		// week
+		if (null != query.getWeek()) {
+			assg = new Assignment(K, "week", String.valueOf(query.getWeek()));
+			tmpPList = assgPListMap.get(assg);
+			if (null != tmpPList) {
+				// 能查询到符合条件的Assignment
+				result.add(tmpPList);
+			}
+		}
+		// hours
+		if (null != query.getHours()) {
+			assg = new Assignment(K, "hours", String.valueOf(query.getHours()));
+			tmpPList = assgPListMap.get(assg);
+			if (null != tmpPList) {
+				// 能查询到符合条件的Assignment
+				result.add(tmpPList);
+			}
+		}
+		// date
+		if (null != query.getHours()) {
+			assg = new Assignment(K, "actdate", new SimpleDateFormat("yyyy-MM-dd").format(query.getDate()));
+			tmpPList = assgPListMap.get(assg);
+			if (null != tmpPList) {
+				// 能查询到符合条件的Assignment
+				result.add(tmpPList);
+			}
+		}
+		return result;
 	}
 
 	/*------------------------------------以上是secondaryIndexQuery用到的方法--------------------------------------*/

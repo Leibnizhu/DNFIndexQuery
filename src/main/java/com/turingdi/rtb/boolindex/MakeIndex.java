@@ -2,7 +2,9 @@ package com.turingdi.rtb.boolindex;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,11 +51,11 @@ public class MakeIndex {
 				for (Assignment assg : newAssgMap.keySet()) {
 					if (storedAssgMap.containsKey(assg)) {
 						// 原来已存储这个Assignment，则将新的Posting的List加入到原有的List中去
-						//curEntry忽略掉因为已经在storedAssgMap第一次put这个assg的时候已经放进去了
+						// curEntry忽略掉因为已经在storedAssgMap第一次put这个assg的时候已经放进去了
 						storedAssgMap.get(assg).getPostingList().addAll(newAssgMap.get(assg).getPostingList());
 					} else {
 						// 原来没有存储，则直接put
-						//这时候放进去的PostList里面curEntry就是0
+						// 这时候放进去的PostList里面curEntry就是0
 						storedAssgMap.put(assg, newAssgMap.get(assg));
 					}
 				}
@@ -66,16 +68,18 @@ public class MakeIndex {
 
 		// 二级索引排序，遍历所有Conjunction的Size
 		for (LinkedHashMap<Assignment, PostList> assgPostMap : secondaryIndex.values()) {
-			//——每个PostingList内部排序
+			// ——每个PostingList内部排序
 			for (PostList postList : assgPostMap.values()) {
 				Collections.sort(postList.getPostingList());
 			}
-			//——Map<Assignment, PostList>中根据PostList的第一个Posting的conjunctionID来排序
-			List<Entry<Assignment, PostList>> tempList = new ArrayList<Entry<Assignment, PostList>>(assgPostMap.entrySet());
+			// ——Map<Assignment,
+			// PostList>中根据PostList的第一个Posting的conjunctionID来排序
+			List<Entry<Assignment, PostList>> tempList = new ArrayList<Entry<Assignment, PostList>>(
+					assgPostMap.entrySet());
 			Collections.sort(tempList, new AssgPostlistEntryComparator());
-//			System.out.println(tempList);
+			// System.out.println(tempList);
 			assgPostMap = new LinkedHashMap<Assignment, PostList>();
-			for(Entry<Assignment, PostList> entry : tempList){
+			for (Entry<Assignment, PostList> entry : tempList) {
 				assgPostMap.put(entry.getKey(), entry.getValue());
 			}
 		}
@@ -98,7 +102,7 @@ public class MakeIndex {
 			nobelongPostList.add(new Posting(conj, false));
 			//对各个属性分别创建键值对
 			//startDate
-			assg = new Assignment(size, "startDate", new SimpleDateFormat("yyyy-MM-dd").format(conj.getStartDate()));
+			/*assg = new Assignment(size, "startDate", new SimpleDateFormat("yyyy-MM-dd").format(conj.getStartDate()));
 			belongPostList = new ArrayList<Posting>();
 			belongPostList.add(new Posting(conj, true));
 			postList = new PostList();
@@ -117,7 +121,39 @@ public class MakeIndex {
 				postList.setCurEntry(0);
 				postList.setCurPost(belongPostList.get(0));
 				assgMap.put(assg, postList);
+			}*/
+			/*
+			 * 对于startDate和StopDate应该是将未来N天（假设一周更新一次，就是7天，假设每天更新索引，就是1天）中可投放的日期（size<=N）
+			 * 单独作为一个actdate创建一个Assignment
+			 */
+			Calendar cal = Calendar.getInstance();
+			Date date = new Date();
+			for(int i = 0; i < 7; i++){
+				if(date.after(conj.getStartDate())){
+					if(date.before(conj.getStopDate())){
+						//当前date在活动规定的范围之内，增加Assignment
+						assg = new Assignment(size, "actdate", new SimpleDateFormat("yyyy-MM-dd").format(date));
+						belongPostList = new ArrayList<Posting>();
+						belongPostList.add(new Posting(conj, true));
+						postList = new PostList();
+						postList.setPostingList(belongPostList);
+						postList.setCurEntry(0);
+						postList.setCurPost(belongPostList.get(0));
+						assgMap.put(assg, postList);
+					} else{
+						//在開始時間後，也在結束時間後，則往後也是超出，直接跳出
+						break;
+					}
+				}
+				//即使是再开始时间之前，也要往前走一天，因为开始时间可能在此之后
+				//日期增加一天
+				cal.setTime(date);
+				cal.add(Calendar.DATE,1);//把日期往后增加一天.整数往后推,负数往前移动 
+				date=cal.getTime();
 			}
+			
+			
+			
 			
 			//area
 			if(null != conj.getArea() && conj.getArea().size() > 0){

@@ -2,6 +2,8 @@ package com.turingdi.rtb.boolindex;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +26,12 @@ public class GetSampleData {
 		act.setCrowd(RedisUtils.getJedis().sinter(sampleMap.get("Crowds")));
 		Map<String, String> timeMap = RedisUtils.getJedis().hgetAll(sampleMap.get("Time"));
 		act.setStartDate(new SimpleDateFormat("yyyy-MM-dd").parse(timeMap.get("StartDate")));
-		act.setStopDate(new SimpleDateFormat("yyyy-MM-dd").parse(timeMap.get("EndDate")));
+		Date stopdate = new SimpleDateFormat("yyyy-MM-dd").parse(timeMap.get("EndDate"));
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(stopdate);
+		cal.add(Calendar.DATE,1);//把日期往后增加一天.整数往后推,负数往前移动 
+		stopdate=cal.getTime();
+		act.setStopDate(stopdate);
 		act.setArea(RedisUtils.getJedis().sinter(sampleMap.get("Area")));
 		act.setAdx(RedisUtils.getJedis().sinter(sampleMap.get("ADX")));
 		act.setTerm(RedisUtils.getJedis().sinter(sampleMap.get("Terminal")));

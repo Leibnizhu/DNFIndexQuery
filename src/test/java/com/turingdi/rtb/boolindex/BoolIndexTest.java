@@ -42,13 +42,15 @@ public class BoolIndexTest {
 			//查询测试
 			//配置query，date/week/hour在new的时候已经根据当前日期时间初始化了
 			Query query = new Query();
-			query.setAdsense("Adsense::3");
+			query.setAdsense("Adsense::4");
 			query.setAdx("Tanx");
-			query.setArea("顺德");
+			query.setArea("锡林郭勒盟");
 			query.setTerm("PC");
 			//执行查询
+			long start = System.nanoTime();
 			Set<Activity> result = new BoolQuery().boolQuery(primaryIndex, secondaryIndex, query);
-			System.out.println(result);
+			System.out.println("Query Cost: " + (System.nanoTime()-start)/1000/1000 + " ms...");
+			System.out.println("最终查询结果: " + result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

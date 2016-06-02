@@ -12,9 +12,32 @@ public class Query {
 	private Integer week;	//周几，1-7
 	private Integer hours;
 	
+	/**
+	 * 计算并返回query中包含的非∉有效条件数量
+	 * @return
+	 */
 	public int size(){
-		return 0;
+		//date,week,hours肯定有
+		int size = 3;
+		if(null != area){
+			size++;
+		}
+		
+		if(null != adx){
+			size++;
+		}
+		
+		if(null != term){
+			size++;
+		}
+		/*
+		 * 对应blacklist条件，为∉条件，不参与size计算
+		if(null != adsense){
+			size++;
+		}*/
+		return size;
 	}
+	
 	
 	public Query() {
 		this.date = new Date();

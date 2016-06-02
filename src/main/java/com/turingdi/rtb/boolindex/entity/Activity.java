@@ -50,10 +50,33 @@ public class Activity {
 	
 	
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Activity other = (Activity) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+	@Override
 	public String toString() {
 		return "Activity [id=" + id + ", name=" + name + ", mode=" + mode + ", cpc=" + cpc + ", total=" + total
 				+ ", everyday=" + everyday + ", object=" + object + ", unit=" + unit + ", count=" + count + /*", crowd="
-				+ crowd +*/ ", startDate=" + startDate + ", stopDate=" + stopDate +/* ", Area=" + Area + */", adx=" + adx
+				+ crowd +*/ ", startDate=" + startDate + ", stopDate=" + stopDate + ", Area=" + Area + ", adx=" + adx
 				+ ", term=" + term + ", blacklist=" + blacklist + ", Hours=" + Hours + "]";
 	}
 	public List<ArrayList<Integer>> getHours() {
