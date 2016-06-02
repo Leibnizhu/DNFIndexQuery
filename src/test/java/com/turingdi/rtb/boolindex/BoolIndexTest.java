@@ -34,7 +34,7 @@ public class BoolIndexTest {
 			/*for(Assignment assg : secondaryIndex.get(8).keySet()){
 				System.out.println(assg + "---" + secondaryIndex.get(8).get(assg));
 			}*/
-			FileWriter fw = new FileWriter(new File("log.log"),false);
+			FileWriter fw = new FileWriter(new File("log.log"), false);
 			fw.write("\n建立索引结果：\n一级索引：\n" + primaryIndex + "\n二级索引：\n" + secondaryIndex);
 			fw.close();
 			//System.out.println("\n建立索引结果：\n一级索引：\n" + primaryIndex + "\n二级索引：\n" + secondaryIndex);
