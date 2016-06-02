@@ -21,14 +21,15 @@ public class BoolIndexTest {
 	public void getSampleTest(){
 		Map<Conjunction, List<Activity>> primaryIndex = new HashMap<Conjunction, List<Activity>>();
 		Map<Integer, LinkedHashMap<Assignment, PostList>> secondaryIndex = new HashMap<Integer, LinkedHashMap<Assignment, PostList>>();
+		RedisUtils.getJedis().hgetAll("Activity::1");
 		try {
-			for(int i = 1; i >= 0; i--){
+			for(int i = 5; i >= 0; i--){
 				long start = System.nanoTime();
 				Activity act = new GetSampleData().getOneRedisSample("Activity::" + (i+1));
-				System.out.println("活动：\n" + act);
+				System.out.println("读取了活动：\n" + act);
 				//System.out.println("分conjunction结果：\n" + new MakeIndex().analysisConjunction(act));
 				new MakeIndex().appendIndex(primaryIndex, secondaryIndex, act);
-				System.out.println("Indexing for Activity::" + (i+1) + " Cost: " + (System.nanoTime()-start)/1000/1000 + " ms...");
+				System.out.println("创建索引耗时: " + (System.nanoTime()-start)/1000/1000 + " ms...");
 			}
 			
 			/*for(Assignment assg : secondaryIndex.get(8).keySet()){
@@ -42,15 +43,15 @@ public class BoolIndexTest {
 			//查询测试
 			//配置query，date/week/hour在new的时候已经根据当前日期时间初始化了
 			Query query = new Query();
-			query.setAdsense("Adsense::4");
+			query.setAdsense("Adsense::");
 			query.setAdx("Tanx");
-			query.setArea("锡林郭勒盟");
+			query.setArea("中山");
 			query.setTerm("PC");
 			//执行查询
 			long start = System.nanoTime();
 			Set<Activity> result = new BoolQuery().boolQuery(primaryIndex, secondaryIndex, query);
-			System.out.println("Query Cost: " + (System.nanoTime()-start)/1000/1000 + " ms...");
-			System.out.println("最终查询结果: " + result);
+			System.out.println("最终查询结果: \n" + result);
+			System.out.println("\n查询耗时: " + (System.nanoTime()-start)/1000/1000 + " ms...");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

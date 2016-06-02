@@ -28,7 +28,7 @@ public class BoolQuery {
 	public Set<Activity> boolQuery(Map<Conjunction, List<Activity>> primaryIndex,
 			Map<Integer, LinkedHashMap<Assignment, PostList>> secondaryIndex, Query bidQuery) {
 		Set<Conjunction> conjResult = secondaryIndexQuery(secondaryIndex, bidQuery);
-		System.out.println("二级检索结果：" + conjResult);
+		System.out.println("\n二级检索结果：" + conjResult);
 		Set<Activity> result = primaryIndexQuery(primaryIndex, conjResult);
 		return result;
 	}

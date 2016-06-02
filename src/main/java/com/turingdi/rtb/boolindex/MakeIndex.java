@@ -130,7 +130,8 @@ public class MakeIndex {
 			Date date = new Date();
 			for(int i = 0; i < 7; i++){
 				if(date.after(conj.getStartDate())){
-					if(date.before(conj.getStopDate())){
+					//包括stopDate为null的情况，及无限制
+					if(null == conj.getStopDate() || date.before(conj.getStopDate())){
 						//当前date在活动规定的范围之内，增加Assignment
 						assg = new Assignment(size, "actdate", new SimpleDateFormat("yyyy-MM-dd").format(date));
 						belongPostList = new ArrayList<Posting>();
@@ -151,9 +152,6 @@ public class MakeIndex {
 				cal.add(Calendar.DATE,1);//把日期往后增加一天.整数往后推,负数往前移动 
 				date=cal.getTime();
 			}
-			
-			
-			
 			
 			//area
 			if(null != conj.getArea() && conj.getArea().size() > 0){
@@ -258,8 +256,10 @@ public class MakeIndex {
 		for (int i = 0; i < 7; i++) {
 			conj = new Conjunction();
 			cloneConj(conj, act);
-			conj.setHours(hoursList.get(i));
-			conj.setWeek(i + 1);
+			if(null != hoursList && i < hoursList.size()){
+				conj.setHours(hoursList.get(i));
+				conj.setWeek(i + 1);
+			}
 			conjList.add(conj);
 		}
 		return conjList;

@@ -50,7 +50,7 @@ public class Conjunction{
 		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
 		result = prime * result + ((stopDate == null) ? 0 : stopDate.hashCode());
 		result = prime * result + ((term == null) ? 0 : term.hashCode());
-		result = prime * result + week;
+		result = prime * result + ((week == null) ? 0 : week.hashCode());;
 		return result;
 	}
 	@Override
@@ -99,7 +99,10 @@ public class Conjunction{
 				return false;
 		} else if (!term.equals(other.term))
 			return false;
-		if (week != other.week)
+		if (week == null) {
+			if (other.week != null)
+				return false;
+		} else if (!week.equals(other.week))
 			return false;
 		return true;
 	}
