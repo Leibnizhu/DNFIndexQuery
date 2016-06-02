@@ -64,7 +64,7 @@ public class Posting implements Comparable<Posting>{
 	
 	@Override
 	public String toString() {
-		return "Posting [conj=" + conj.getId() + ", belong=" + belong + "]";
+		return "Posting [conj=" + conj.getId() + ", belong=" + (belong?"∈":"不属于") + "]";
 	}
 	public Conjunction getConj() {
 		return conj;

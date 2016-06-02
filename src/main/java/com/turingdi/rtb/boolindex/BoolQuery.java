@@ -78,10 +78,11 @@ public class BoolQuery {
 						int rejectID = poLists.get(0).getCurPost().getConj().getId();
 						for (int L = K; L < poLists.size(); L++) {
 							// System.out.println("reject = " + rejectID);
-							if (null != poLists.get(L).getCurPost() &&rejectID == poLists.get(L).getCurPost().getConj().getId()) {
+							if (null != poLists.get(L).getCurPost() && rejectID == poLists.get(L).getCurPost().getConj().getId()) {
 								postListSkip(poLists.get(L), rejectID + 1);
 							} else {
-								break;
+								//第K-1个条件已经fail了已经没得选的话，让他重新排序
+								continue;
 							}
 						}
 					} else {

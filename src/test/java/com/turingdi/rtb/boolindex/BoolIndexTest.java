@@ -44,9 +44,9 @@ public class BoolIndexTest {
 			//查询测试
 			//配置query，date/week/hour在new的时候已经根据当前日期时间初始化了
 			Query query = new Query();
-			query.setAdsense("Adsense::");
-			query.setAdx("腾讯");
-			//query.setArea("中山");
+			query.setAdsense("Adsense::3");
+			query.setAdx("Tanx");
+			query.setArea("锡林郭勒盟");
 			query.setTerm("PC");
 			//执行查询
 			long start = System.nanoTime();
