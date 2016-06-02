@@ -15,6 +15,34 @@ public class Posting implements Comparable<Posting>{
 		this.belong = belong;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (belong ? 1231 : 1237);
+		result = prime * result + ((conj == null) ? 0 : conj.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Posting other = (Posting) obj;
+		if (belong != other.belong)
+			return false;
+		if (conj == null) {
+			if (other.conj != null)
+				return false;
+		} else if (!conj.equals(other.conj))
+			return false;
+		return true;
+	}
+
 	/* 
 	 * 比较的方法，来自Comparable接口
 	 * 优先判断conjunction的ID，如果ID相等，则∈关系的比∉关系的更大

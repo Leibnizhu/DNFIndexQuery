@@ -17,7 +17,7 @@ public class Conjunction{
 	
 	//不含非
 	public int size(){
-		// startDate,adx必须有
+		//date（查询时包括 startDate和stopdate了）和,adx必须有
 		int size = 2;
 		/*if(null != stopDate){
 			size++;
@@ -46,7 +46,6 @@ public class Conjunction{
 		result = prime * result + ((hours == null) ? 0 : hours.hashCode());
 		result = prime * result + ((adx == null) ? 0 : adx.hashCode());
 		result = prime * result + ((blacklist == null) ? 0 : blacklist.hashCode());
-		result = prime * result + id;
 		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
 		result = prime * result + ((stopDate == null) ? 0 : stopDate.hashCode());
 		result = prime * result + ((term == null) ? 0 : term.hashCode());
@@ -82,8 +81,6 @@ public class Conjunction{
 				return false;
 		} else if (!blacklist.equals(other.blacklist))
 			return false;
-		if (id != other.id)
-			return false;
 		if (startDate == null) {
 			if (other.startDate != null)
 				return false;
@@ -108,8 +105,8 @@ public class Conjunction{
 	}
 	@Override
 	public String toString() {
-		return "Conjunction [id=" + id + ", startDate=" + startDate + ", stopDate=" + stopDate + /*", Area=" + Area
-				+*/ ", adx=" + adx + ", term=" + term + ", blacklist=" + blacklist + ", week=" + week + ", hours=" + hours
+		return "Conjunction [id=" + id + ", startDate=" + startDate + ", stopDate=" + stopDate + ", Area=" + ((null==area)?0:area.size())
+				+ ", adx=" + adx + ", term=" + term + ", blacklist=" + blacklist + ", week=" + week + ", hours=" + hours
 				+ "]";
 	}
 	public int getId() {

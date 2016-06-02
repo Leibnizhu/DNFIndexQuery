@@ -52,7 +52,11 @@ public class MakeIndex {
 					if (storedAssgMap.containsKey(assg)) {
 						// 原来已存储这个Assignment，则将新的Posting的List加入到原有的List中去
 						// curEntry忽略掉因为已经在storedAssgMap第一次put这个assg的时候已经放进去了
-						storedAssgMap.get(assg).getPostingList().addAll(newAssgMap.get(assg).getPostingList());
+						List<Posting> storedPList = storedAssgMap.get(assg).getPostingList();
+						List<Posting> newPList = newAssgMap.get(assg).getPostingList();
+						if(!storedPList.containsAll(newPList)){
+							storedPList.addAll(newPList);
+						}
 					} else {
 						// 原来没有存储，则直接put
 						// 这时候放进去的PostList里面curEntry就是0
@@ -153,21 +157,6 @@ public class MakeIndex {
 				date=cal.getTime();
 			}
 			
-			//area
-			if(null != conj.getArea() && conj.getArea().size() > 0){
-				for(String area : conj.getArea()){
-					//每个地区分别建一个Assignment
-					assg = new Assignment(size, "area", area);
-					belongPostList = new ArrayList<Posting>();
-					belongPostList.add(new Posting(conj, true));
-					postList = new PostList();
-					postList.setPostingList(belongPostList);
-					postList.setCurEntry(0);
-					postList.setCurPost(belongPostList.get(0));
-					assgMap.put(assg, postList);
-				}
-			}
-			
 			//adx
 			if(null != conj.getAdx() && conj.getAdx().size() > 0){
 				for(String adx : conj.getAdx()){
@@ -227,6 +216,21 @@ public class MakeIndex {
 				//一天内哪些时间段全部要逐个创建Assignment
 				for(Integer hour : conj.getHours()){
 					assg = new Assignment(size, "hours", String.valueOf(hour));
+					belongPostList = new ArrayList<Posting>();
+					belongPostList.add(new Posting(conj, true));
+					postList = new PostList();
+					postList.setPostingList(belongPostList);
+					postList.setCurEntry(0);
+					postList.setCurPost(belongPostList.get(0));
+					assgMap.put(assg, postList);
+				}
+			}
+
+			//area
+			if(null != conj.getArea() && conj.getArea().size() > 0){
+				for(String area : conj.getArea()){
+					//每个地区分别建一个Assignment
+					assg = new Assignment(size, "area", area);
 					belongPostList = new ArrayList<Posting>();
 					belongPostList.add(new Posting(conj, true));
 					postList = new PostList();

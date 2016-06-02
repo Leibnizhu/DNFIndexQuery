@@ -26,10 +26,10 @@ public class BoolIndexTest {
 			for(int i = 5; i >= 0; i--){
 				long start = System.nanoTime();
 				Activity act = new GetSampleData().getOneRedisSample("Activity::" + (i+1));
-				System.out.println("读取了活动：\n" + act);
+				//System.out.println("读取了活动：\n" + act);
 				//System.out.println("分conjunction结果：\n" + new MakeIndex().analysisConjunction(act));
 				new MakeIndex().appendIndex(primaryIndex, secondaryIndex, act);
-				System.out.println("创建索引耗时: " + (System.nanoTime()-start)/1000/1000 + " ms...");
+				System.out.println("活动" + (i + 1) + "创建索引耗时: " + (System.nanoTime()-start)/1000/1000 + " ms...");
 			}
 			
 			/*for(Assignment assg : secondaryIndex.get(8).keySet()){
@@ -38,20 +38,23 @@ public class BoolIndexTest {
 			FileWriter fw = new FileWriter(new File("log.log"), false);
 			fw.write("\n建立索引结果：\n一级索引：\n" + primaryIndex + "\n二级索引：\n" + secondaryIndex);
 			fw.close();
+			System.out.println("索引已写入log.log文件...");
 			//System.out.println("\n建立索引结果：\n一级索引：\n" + primaryIndex + "\n二级索引：\n" + secondaryIndex);
 			
 			//查询测试
 			//配置query，date/week/hour在new的时候已经根据当前日期时间初始化了
 			Query query = new Query();
 			query.setAdsense("Adsense::");
-			query.setAdx("Tanx");
-			query.setArea("中山");
+			query.setAdx("腾讯");
+			//query.setArea("中山");
 			query.setTerm("PC");
 			//执行查询
 			long start = System.nanoTime();
 			Set<Activity> result = new BoolQuery().boolQuery(primaryIndex, secondaryIndex, query);
-			System.out.println("最终查询结果: \n" + result);
-			System.out.println("\n查询耗时: " + (System.nanoTime()-start)/1000/1000 + " ms...");
+			long costtime =  (System.nanoTime()-start)/1000/1000;
+			System.out.println("\n最终查询结果:" + result.size() + " 个活动\n" + result);
+			System.out.println("查询耗时: " + costtime + " ms...");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -28,7 +28,10 @@ public class BoolQuery {
 	public Set<Activity> boolQuery(Map<Conjunction, List<Activity>> primaryIndex,
 			Map<Integer, LinkedHashMap<Assignment, PostList>> secondaryIndex, Query bidQuery) {
 		Set<Conjunction> conjResult = secondaryIndexQuery(secondaryIndex, bidQuery);
-		System.out.println("\n二级检索结果：" + conjResult);
+		System.out.println("\n二级检索结果：");
+		for(Conjunction conj : conjResult){
+			System.out.println(conj);
+		}
 		Set<Activity> result = primaryIndexQuery(primaryIndex, conjResult);
 		return result;
 	}
@@ -66,8 +69,10 @@ public class BoolQuery {
 				sortByCurEntries(poLists);
 				int nextID = 0;
 				// 判断poList第一个的conjunction和第K个的是否一致
-				if (poLists.get(0).getCurPost().getConj().getId() == poLists.get(K - 1).getCurPost().getConj()
-						.getId()) {
+				if(null ==poLists.get(K - 1).getCurPost()){
+					continue;
+				}
+				if (poLists.get(0).getCurPost().getConj().getId() == poLists.get(K - 1).getCurPost().getConj().getId()) {
 					if (!poLists.get(0).getCurPost().isBelong()) {
 						// 如果是“不属于”的posting
 						int rejectID = poLists.get(0).getCurPost().getConj().getId();
