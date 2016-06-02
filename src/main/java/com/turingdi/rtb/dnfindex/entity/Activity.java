@@ -1,4 +1,4 @@
-package com.turingdi.rtb.boolindex.entity;
+package com.turingdi.rtb.dnfindex.entity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,7 +76,7 @@ public class Activity {
 	public String toString() {
 		return "Activity [id=" + id + ", name=" + name + ", mode=" + mode + ", cpc=" + cpc + ", total=" + total
 				+ ", everyday=" + everyday + ", object=" + object + ", unit=" + unit + ", count=" + count + /*", crowd="
-				+ crowd +*/ ", startDate=" + startDate + ", stopDate=" + stopDate + ", Area=" + Area + ", adx=" + adx
+				+ crowd +*/ ", startDate=" + startDate + ", stopDate=" + stopDate + ", Area.size=" + ((null==Area)?0:Area.size()) + ", adx=" + adx
 				+ ", term=" + term + ", blacklist=" + blacklist + ", Hours=" + Hours + "]";
 	}
 	public List<ArrayList<Integer>> getHours() {

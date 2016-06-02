@@ -1,4 +1,4 @@
-package com.turingdi.rtb.boolindex.entity;
+package com.turingdi.rtb.dnfindex.entity;
 
 public class Assignment {
 	private int k;	//	对应conjunction的size

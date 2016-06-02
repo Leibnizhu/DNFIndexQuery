@@ -1,4 +1,4 @@
-package com.turingdi.rtb.boolindex;
+package com.turingdi.rtb.dnfindex;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.turingdi.rtb.boolindex.entity.Activity;
-import com.turingdi.rtb.boolindex.entity.AssgPostlistEntryComparator;
-import com.turingdi.rtb.boolindex.entity.Assignment;
-import com.turingdi.rtb.boolindex.entity.Conjunction;
-import com.turingdi.rtb.boolindex.entity.PostList;
-import com.turingdi.rtb.boolindex.entity.Posting;
+import com.turingdi.rtb.dnfindex.entity.Activity;
+import com.turingdi.rtb.dnfindex.entity.AssgPostlistEntryComparator;
+import com.turingdi.rtb.dnfindex.entity.Assignment;
+import com.turingdi.rtb.dnfindex.entity.Conjunction;
+import com.turingdi.rtb.dnfindex.entity.PostList;
+import com.turingdi.rtb.dnfindex.entity.Posting;
 
 public class MakeIndex {
 	/**

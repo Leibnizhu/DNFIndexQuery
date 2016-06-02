@@ -1,4 +1,4 @@
-package com.turingdi.rtb.boolindex;
+package com.turingdi.rtb.dnfindex;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.turingdi.rtb.boolindex.entity.Activity;
+import com.turingdi.rtb.dnfindex.entity.Activity;
 
 public class GetSampleData {
 	public Activity getOneRedisSample(String ActivityID) throws Exception {

@@ -1,4 +1,4 @@
-package com.turingdi.rtb.boolindex.entity;
+package com.turingdi.rtb.dnfindex.entity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -105,7 +105,7 @@ public class Conjunction{
 	}
 	@Override
 	public String toString() {
-		return "Conjunction [id=" + id + ", startDate=" + startDate + ", stopDate=" + stopDate + ", Area=" + ((null==area)?0:area.size())
+		return "Conjunction [id=" + id + ", startDate=" + startDate + ", stopDate=" + stopDate + ", Area.size=" + ((null==area)?0:area.size())
 				+ ", adx=" + adx + ", term=" + term + ", blacklist=" + blacklist + ", week=" + week + ", hours=" + hours
 				+ "]";
 	}

@@ -1,4 +1,4 @@
-package com.turingdi.rtb.boolindex;
+package com.turingdi.rtb.dnfindex;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,11 +10,15 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import com.turingdi.rtb.boolindex.entity.Activity;
-import com.turingdi.rtb.boolindex.entity.Assignment;
-import com.turingdi.rtb.boolindex.entity.Conjunction;
-import com.turingdi.rtb.boolindex.entity.PostList;
-import com.turingdi.rtb.boolindex.entity.Query;
+import com.turingdi.rtb.dnfindex.BoolQuery;
+import com.turingdi.rtb.dnfindex.GetSampleData;
+import com.turingdi.rtb.dnfindex.MakeIndex;
+import com.turingdi.rtb.dnfindex.RedisUtils;
+import com.turingdi.rtb.dnfindex.entity.Activity;
+import com.turingdi.rtb.dnfindex.entity.Assignment;
+import com.turingdi.rtb.dnfindex.entity.Conjunction;
+import com.turingdi.rtb.dnfindex.entity.PostList;
+import com.turingdi.rtb.dnfindex.entity.Query;
 
 public class BoolIndexTest {
 	@Test
@@ -32,27 +36,26 @@ public class BoolIndexTest {
 				System.out.println("活动" + (i + 1) + "创建索引耗时: " + (System.nanoTime()-start)/1000/1000 + " ms...");
 			}
 			
-			/*for(Assignment assg : secondaryIndex.get(8).keySet()){
-				System.out.println(assg + "---" + secondaryIndex.get(8).get(assg));
-			}*/
 			FileWriter fw = new FileWriter(new File("log.log"), false);
 			fw.write("\n建立索引结果：\n一级索引：\n" + primaryIndex + "\n二级索引：\n" + secondaryIndex);
 			fw.close();
 			System.out.println("索引已写入log.log文件...");
-			//System.out.println("\n建立索引结果：\n一级索引：\n" + primaryIndex + "\n二级索引：\n" + secondaryIndex);
 			
 			//查询测试
 			//配置query，date/week/hour在new的时候已经根据当前日期时间初始化了
-			Query query = new Query();
+			Query query = new Query(); 
 			query.setAdsense("Adsense::3");
 			query.setAdx("Tanx");
-			query.setArea("锡林郭勒盟");
+			query.setArea("顺德");
 			query.setTerm("PC");
 			//执行查询
 			long start = System.nanoTime();
 			Set<Activity> result = new BoolQuery().boolQuery(primaryIndex, secondaryIndex, query);
 			long costtime =  (System.nanoTime()-start)/1000/1000;
-			System.out.println("\n最终查询结果:" + result.size() + " 个活动\n" + result);
+			System.out.println("\n最终查询结果:" + result.size() + " 个活动");
+			for(Activity act : result){
+				System.out.println(act);
+			}
 			System.out.println("查询耗时: " + costtime + " ms...");
 			
 		} catch (Exception e) {

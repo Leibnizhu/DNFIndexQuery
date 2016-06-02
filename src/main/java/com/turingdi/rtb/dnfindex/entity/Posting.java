@@ -1,4 +1,4 @@
-package com.turingdi.rtb.boolindex.entity;
+package com.turingdi.rtb.dnfindex.entity;
 
 /**
  * Posting List中每个元素的实体，对应论文里的(3, ∈)或(6,∉)等
